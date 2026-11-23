@@ -14,6 +14,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-s
 .header{padding:30px 32px 22px;border-bottom:1px solid var(--line)}
 h1{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.02em}
 .subtitle{margin:0;color:var(--muted);line-height:1.55}
+.years-input{width:64px;height:30px;border:1px solid #d0d5dd;border-radius:8px;padding:0 6px;text-align:center;font:inherit;font-size:14px;font-weight:700;color:var(--text);background:#fff;outline:none;vertical-align:middle}
+.years-input:focus{border-color:#98a2b3;box-shadow:0 0 0 3px rgba(152,162,179,.15)}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:22px 32px;background:#fbfcfe;border-bottom:1px solid var(--line)}
 .summary-item{padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fff}
 .summary-title{font-size:18px;font-weight:700;margin-bottom:14px}
@@ -185,15 +187,16 @@ thead tr:first-child th{text-align:center;font-size:15px}
     </div></section>
   </div>
 
-  <p class="note">Supuestos: horizonte de 20 años. La aportación inicial se realiza en el año 0 y las aportaciones anuales al final de cada uno de los 20 años. El S&P 500 invierte automáticamente el 55 % de las aportaciones del plan, representando el mismo coste neto estimado tras un ahorro fiscal del 45 %. La fiscalidad del rescate mantiene los mismos supuestos aproximados usados en la comparativa anterior y no se aplica rentabilidad adicional después de los 65 durante la retirada.</p>
+  <p class="note">Supuestos: horizonte definido por el número de años indicado arriba. La aportación inicial se realiza en el año 0 y las aportaciones anuales al final de cada uno de los 20 años. El S&P 500 invierte automáticamente el 55 % de las aportaciones del plan, representando el mismo coste neto estimado tras un ahorro fiscal del 45 %. La fiscalidad del rescate mantiene los mismos supuestos aproximados usados en la comparativa anterior y no se aplica rentabilidad adicional después de los 65 durante la retirada.</p>
 </div></div>
 
 <script>
 (() => {
-  const years=20, equivalence=.55, pensionGrossBase=24000;
+  const equivalence=.55, pensionGrossBase=24000;
+  const getYears=()=>Math.max(1,Math.min(60,Math.round(Number(document.getElementById('years-input')?.value)||20)));
   const fmt=n=>new Intl.NumberFormat('es-ES',{maximumFractionDigits:0}).format(Math.max(0,Math.round(n)))+' €';
   const val=id=>Number(document.getElementById(id).value);
-  const fv=(initial,annual,ratePct)=>{
+  const fv=(initial,annual,ratePct,years)=>{
     const r=ratePct/100;
     const initialFV=initial*Math.pow(1+r,years);
     const annuityFV=r===0?annual*years:annual*((Math.pow(1+r,years)-1)/r);
@@ -232,7 +235,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
     return tax;
   }
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
-  const accumulationSeries=(initial,annual,ratePct)=>{
+  const accumulationSeries=(initial,annual,ratePct,years)=>{
     const r=ratePct/100;
     const series=[{year:0,value:initial}];
     let balance=initial;
@@ -243,7 +246,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
     return series;
   };
 
-  function renderChart(ppSeries,spSeries){
+  function renderChart(ppSeries,spSeries,years){
     const svg=document.getElementById('accumulation-chart');
     if(!svg)return;
     const width=900,height=320,pad={t:20,r:18,b:38,l:62};
@@ -259,7 +262,8 @@ thead tr:first-child th{text-align:center;font-size:15px}
       const label=new Intl.NumberFormat('es-ES',{notation:'compact',maximumFractionDigits:1}).format(v)+' €';
       return '<line x1="'+pad.l+'" y1="'+yy+'" x2="'+(width-pad.r)+'" y2="'+yy+'" stroke="#e7e9ee" stroke-width="1"/><text x="'+(pad.l-10)+'" y="'+(yy+4)+'" text-anchor="end" fill="#667085" font-size="12">'+label+'</text>';
     }).join('');
-    const xTicks=[0,5,10,15,20].map(t=>'<line x1="'+x(t)+'" y1="'+(height-pad.b)+'" x2="'+x(t)+'" y2="'+(height-pad.b+5)+'" stroke="#98a2b3" stroke-width="1"/><text x="'+x(t)+'" y="'+(height-pad.b+20)+'" text-anchor="middle" fill="#667085" font-size="12">'+t+'</text>').join('');
+    const tickCandidates=[0,Math.round(years*.25),Math.round(years*.5),Math.round(years*.75),years];
+    const xTicks=[...new Set(tickCandidates)].map(t=>'<line x1="'+x(t)+'" y1="'+(height-pad.b)+'" x2="'+x(t)+'" y2="'+(height-pad.b+5)+'" stroke="#98a2b3" stroke-width="1"/><text x="'+x(t)+'" y="'+(height-pad.b+20)+'" text-anchor="middle" fill="#667085" font-size="12">'+t+'</text>').join('');
     svg.innerHTML=
       '<rect x="0" y="0" width="'+width+'" height="'+height+'" fill="#fff" rx="10"></rect>'+
       grid+
@@ -272,6 +276,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
   }
 
   function update(){
+    const years=getYears();
     const ppInitial=val('pp-initial'),ppAnnual=val('pp-annual'),ppRate=val('pp-yield'),spRate=val('sp-yield');
     const customDesktop=document.getElementById('withdrawal-custom-desktop');
     const customMobile=document.getElementById('withdrawal-custom-mobile');
@@ -283,12 +288,12 @@ thead tr:first-child th{text-align:center;font-size:15px}
     validation.textContent='';
     const spInitial=ppInitial*equivalence,spAnnual=ppAnnual*equivalence;
     const ppContributed=ppInitial+ppAnnual*years,spContributed=spInitial+spAnnual*years;
-    const ppFinal=fv(ppInitial,ppAnnual,ppRate),spFinal=fv(spInitial,spAnnual,spRate);
+    const ppFinal=fv(ppInitial,ppAnnual,ppRate,years),spFinal=fv(spInitial,spAnnual,spRate,years);
 
     set('sp-initial',fmt(spInitial));set('sp-annual',fmt(spAnnual));
     set('pp-contributed',fmt(ppContributed));set('sp-contributed',fmt(spContributed));
     set('pp-final',fmt(ppFinal));set('sp-final',fmt(spFinal));
-    renderChart(accumulationSeries(ppInitial,ppAnnual,ppRate),accumulationSeries(spInitial,spAnnual,spRate));
+    renderChart(accumulationSeries(ppInitial,ppAnnual,ppRate,years),accumulationSeries(spInitial,spAnnual,spRate,years),years);
 
     const spGain=Math.max(0,spFinal-spContributed);
     const spTaxAll=savingsTax(spGain),spTax10=stagedFundTax(spFinal,spContributed,10000),spTax20=stagedFundTax(spFinal,spContributed,customWithdrawal);
@@ -323,6 +328,13 @@ thead tr:first-child th{text-align:center;font-size:15px}
       if(other)other.value=n;
       update();
     });
+  });
+
+  const yearsInput=document.getElementById('years-input');
+  yearsInput?.addEventListener('input',update);
+  yearsInput?.addEventListener('change',()=>{
+    yearsInput.value=getYears();
+    update();
   });
 
   ['pp-initial','pp-annual','pp-yield','sp-yield'].forEach(id=>{
