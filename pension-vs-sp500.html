@@ -27,7 +27,9 @@ h1{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.02em}
 .readonly{height:40px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;padding:9px 10px;font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
 .details{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.45}
 .details-line{display:block}
-.details-line + .details-line{margin-top:3px}
+.details-line + .details-line{margin-top:8px}
+.details-label{display:block;color:var(--muted);font-size:12px;font-weight:500;line-height:1.2}
+.details-value{display:block;margin-top:2px;color:var(--text);font-size:17px;font-weight:700;line-height:1.2}
 .details strong{color:var(--text);font-size:17px;font-weight:700}
 .validation{min-height:18px;padding:0 32px 14px;color:#b42318;font-size:12px}
 .chart-section{padding:24px 32px 6px}
@@ -104,7 +106,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
           <div class="input-wrap"><input id="pp-yield" class="input" type="number" min="0" max="30" step="0.1" value="6.1" inputmode="decimal"><span class="suffix">%</span></div>
         </div>
       </div>
-      <div class="details"><span class="details-line">Total aportado: <strong id="pp-contributed"></strong></span><span class="details-line">Capital bruto final: <strong id="pp-final"></strong></span></div>
+      <div class="details"><span class="details-line"><span class="details-label">Total aportado</span><span class="details-value" id="pp-contributed"></span></span><span class="details-line"><span class="details-label">Capital bruto final</span><span class="details-value" id="pp-final"></span></span></div>
     </section>
 
     <section class="summary-item">
@@ -123,7 +125,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
           <div class="input-wrap"><input id="sp-yield" class="input" type="number" min="0" max="30" step="0.1" value="11.0" inputmode="decimal"><span class="suffix">%</span></div>
         </div>
       </div>
-      <div class="details"><span class="details-line">Total aportado: <strong id="sp-contributed"></strong></span><span class="details-line">Capital bruto final: <strong id="sp-final"></strong></span></div>
+      <div class="details"><span class="details-line"><span class="details-label">Total aportado</span><span class="details-value" id="sp-contributed"></span></span><span class="details-line"><span class="details-label">Capital bruto final</span><span class="details-value" id="sp-final"></span></span></div>
     </section>
   </div>
 
