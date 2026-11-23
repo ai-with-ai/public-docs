@@ -149,17 +149,6 @@ thead tr:first-child th{text-align:center;font-size:15px}
 
     <section class="withdrawal-section">
       <div class="withdrawal-controls">
-        <div class="withdrawal-control-block">
-          <div class="withdrawal-head">
-            <span class="withdrawal-label">Retirada anual</span>
-            <span class="withdrawal-selected" id="withdrawal-selected">20.000 €/año</span>
-          </div>
-          <input id="withdrawal-range" class="withdrawal-range" type="range" min="1000" max="100000" step="1000" value="20000" aria-label="Cantidad retirada cada año">
-          <div class="withdrawal-ticks">
-            <span>1K</span><span>20K</span><span>40K</span><span>60K</span><span>80K</span><span>100K</span>
-          </div>
-        </div>
-
         <div class="withdrawal-control-block pension-income">
           <div class="pension-income-head">
             <label for="pension-income-range">Pensión estimada al año</label>
@@ -168,6 +157,17 @@ thead tr:first-child th{text-align:center;font-size:15px}
           <input id="pension-income-range" class="pension-income-range" type="range" min="0" max="100000" step="1000" value="24000" aria-label="Pensión estimada al año">
           <div class="withdrawal-ticks">
             <span>0</span><span>20K</span><span>40K</span><span>60K</span><span>80K</span><span>100K</span>
+          </div>
+        </div>
+
+        <div class="withdrawal-control-block">
+          <div class="withdrawal-head">
+            <span class="withdrawal-label">Retirada anual</span>
+            <span class="withdrawal-selected" id="withdrawal-selected">20.000 €/año</span>
+          </div>
+          <input id="withdrawal-range" class="withdrawal-range" type="range" min="1000" max="100000" step="1000" value="20000" aria-label="Cantidad retirada cada año">
+          <div class="withdrawal-ticks">
+            <span>1K</span><span>20K</span><span>40K</span><span>60K</span><span>80K</span><span>100K</span>
           </div>
         </div>
       </div>
