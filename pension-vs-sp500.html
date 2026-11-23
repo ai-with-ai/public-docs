@@ -3,11 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Comparativa S&P 500 vs Plan de Pensiones</title>
+<title>Comparativa Plan de Pensiones vs S&P 500</title>
 <style>
-:root{
-  --bg:#f6f7fb;--card:#fff;--text:#171923;--muted:#667085;--line:#e7e9ee;--good:#067647;
-}
+:root{--bg:#f6f7fb;--card:#fff;--text:#171923;--muted:#667085;--line:#e7e9ee;--good:#067647}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -18,16 +16,18 @@ h1{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.02em}
 .subtitle{margin:0;color:var(--muted);line-height:1.55}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:22px 32px;background:#fbfcfe;border-bottom:1px solid var(--line)}
 .summary-item{padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fff}
-.summary-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.summary-head>strong{font-size:18px}
-.yield-field{display:flex;align-items:center;gap:7px;flex:0 0 auto}
-.yield-field label{color:var(--muted);font-size:12px;font-weight:600}
-.yield-input-wrap{position:relative;width:88px}
-.yield-input{width:100%;height:36px;border:1px solid #d0d5dd;border-radius:9px;padding:0 27px 0 10px;background:#fff;color:var(--text);font:inherit;font-size:14px;font-weight:600;outline:none}
-.yield-input:focus{border-color:#98a2b3;box-shadow:0 0 0 3px rgba(152,162,179,.15)}
-.yield-suffix{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
-.details{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.45}
+.summary-title{font-size:18px;font-weight:700;margin-bottom:14px}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.field{min-width:0}
+.field label{display:block;color:var(--muted);font-size:12px;font-weight:600;margin-bottom:5px}
+.input-wrap{position:relative}
+.input{width:100%;height:38px;border:1px solid #d0d5dd;border-radius:9px;padding:0 30px 0 10px;background:#fff;color:var(--text);font:inherit;font-size:14px;font-weight:600;outline:none}
+.input:focus{border-color:#98a2b3;box-shadow:0 0 0 3px rgba(152,162,179,.15)}
+.suffix{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
+.readonly{height:38px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;padding:9px 10px;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.details{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.45}
 .details strong{color:var(--text)}
+.validation{min-height:18px;padding:0 32px 14px;color:#b42318;font-size:12px}
 .table-wrap{overflow-x:auto;padding:24px 32px 30px;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:separate;border-spacing:0;min-width:820px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 th,td{padding:16px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
@@ -40,13 +40,15 @@ thead tr:first-child th{text-align:center;font-size:15px}
 .best{color:var(--good)}
 .note{margin:0;padding:0 32px 30px;color:var(--muted);font-size:13px;line-height:1.55}
 .mobile-comparison{display:none}
-.validation{min-height:18px;padding:0 32px 14px;color:#b42318;font-size:12px}
+@media(max-width:800px){
+  .fields{grid-template-columns:1fr 1fr}.field:last-child{grid-column:1/-1}
+}
 @media(max-width:700px){
   body{background:#fff}.wrap{margin:0;padding:0;max-width:none}.card{border:none;border-radius:0;box-shadow:none}
   .header{padding:22px 18px 18px}h1{font-size:24px;line-height:1.15}.subtitle{font-size:14px;line-height:1.45}
   .summary{grid-template-columns:1fr;gap:10px;padding:16px 14px}.summary-item{padding:14px 15px;border-radius:12px}
-  .summary-head{align-items:center}.summary-head>strong{font-size:17px}.yield-field label{font-size:11px}.yield-input-wrap{width:84px}
-  .yield-input{height:36px;font-size:16px}
+  .summary-title{font-size:17px}.fields{grid-template-columns:1fr 1fr}.field:last-child{grid-column:auto}
+  .input{height:42px;font-size:16px}.readonly{height:42px;padding-top:10px;font-size:14px}
   .table-wrap{display:none}.mobile-comparison{display:block;padding:16px 14px 20px}
   .scenario{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px;background:#fff}.scenario:last-child{margin-bottom:0}
   .scenario-title{margin:0;padding:13px 14px;background:#f8fafc;border-bottom:1px solid var(--line);font-size:15px;font-weight:700}
@@ -55,47 +57,56 @@ thead tr:first-child th{text-align:center;font-size:15px}
   .metric-label{display:block;color:var(--muted);font-size:12px;line-height:1.3;margin-bottom:3px}.metric-value{display:block;font-size:16px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
   .note{padding:0 18px 24px;font-size:12px}.validation{padding:0 18px 10px}
 }
-@media(max-width:380px){
-  h1{font-size:22px}.summary-head{display:block}.yield-field{margin-top:10px;justify-content:space-between}.scenario-col{padding:12px 10px}.metric-value{font-size:15px}
+@media(max-width:420px){
+  h1{font-size:22px}.fields{grid-template-columns:1fr}.scenario-col{padding:12px 10px}.metric-value{font-size:15px}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="card">
+<div class="wrap"><div class="card">
   <div class="header">
-    <h1>S&P 500 vs Plan de Pensiones</h1>
-    <p class="subtitle">Comparativa estimada a 20 años hasta los 65, incluyendo distintos escenarios de retirada.</p>
+    <h1>Plan de Pensiones vs S&P 500</h1>
+    <p class="subtitle">Comparativa estimada a 20 años hasta los 65. El S&P 500 usa automáticamente una aportación equivalente al 55 % de la aportación del plan de pensiones.</p>
   </div>
 
   <div class="summary">
-    <div class="summary-item">
-      <div class="summary-head">
-        <strong>S&P 500</strong>
-        <div class="yield-field">
-          <label for="sp500-yield">Rendimiento</label>
-          <div class="yield-input-wrap">
-            <input id="sp500-yield" class="yield-input" type="number" min="0" max="30" step="0.1" value="11.0" inputmode="decimal">
-            <span class="yield-suffix">%</span>
-          </div>
+    <section class="summary-item">
+      <div class="summary-title">Plan de pensiones</div>
+      <div class="fields">
+        <div class="field">
+          <label for="pp-initial">Aportación inicial (año 0)</label>
+          <div class="input-wrap"><input id="pp-initial" class="input" type="number" min="0" step="50" value="5750" inputmode="decimal"><span class="suffix">€</span></div>
+        </div>
+        <div class="field">
+          <label for="pp-annual">Aportación anual</label>
+          <div class="input-wrap"><input id="pp-annual" class="input" type="number" min="0" step="50" value="5750" inputmode="decimal"><span class="suffix">€</span></div>
+        </div>
+        <div class="field">
+          <label for="pp-yield">Rendimiento</label>
+          <div class="input-wrap"><input id="pp-yield" class="input" type="number" min="0" max="30" step="0.1" value="6.1" inputmode="decimal"><span class="suffix">%</span></div>
         </div>
       </div>
-      <div class="details">Aportado <strong>63.250 €</strong> → total final: <strong id="sp500-final">203.041 €</strong></div>
-    </div>
+      <div class="details">Total aportado: <strong id="pp-contributed"></strong> → capital bruto final: <strong id="pp-final"></strong></div>
+    </section>
 
-    <div class="summary-item">
-      <div class="summary-head">
-        <strong>Plan de pensiones</strong>
-        <div class="yield-field">
-          <label for="pension-yield">Rendimiento</label>
-          <div class="yield-input-wrap">
-            <input id="pension-yield" class="yield-input" type="number" min="0" max="30" step="0.1" value="6.1" inputmode="decimal">
-            <span class="yield-suffix">%</span>
-          </div>
+    <section class="summary-item">
+      <div class="summary-title">S&P 500</div>
+      <div class="fields">
+        <div class="field">
+          <label>Aportación inicial equivalente</label>
+          <div class="readonly" id="sp-initial"></div>
+        </div>
+        <div class="field">
+          <label>Aportación anual equivalente</label>
+          <div class="readonly" id="sp-annual"></div>
+        </div>
+        <div class="field">
+          <label for="sp-yield">Rendimiento</label>
+          <div class="input-wrap"><input id="sp-yield" class="input" type="number" min="0" max="30" step="0.1" value="11.0" inputmode="decimal"><span class="suffix">%</span></div>
         </div>
       </div>
-      <div class="details">Aportado <strong>115.000 €</strong> → total final: <strong id="pension-final">213.805 €</strong></div>
-    </div>
+      <div class="details">Total aportado: <strong id="sp-contributed"></strong> → capital bruto final: <strong id="sp-final"></strong></div>
+    </section>
   </div>
 
   <div id="validation" class="validation" aria-live="polite"></div>
@@ -104,200 +115,128 @@ thead tr:first-child th{text-align:center;font-size:15px}
     <table>
       <thead>
         <tr><th rowspan="2"></th><th colspan="2">TODO</th><th colspan="2">Retirar 10K/año</th><th colspan="2">Retirar 20K/año</th></tr>
-        <tr><th>S&P 500</th><th>Pensión</th><th>S&P 500</th><th>Pensión</th><th>S&P 500</th><th>Pensión</th></tr>
+        <tr><th>Pensión</th><th>S&P 500</th><th>Pensión</th><th>S&P 500</th><th>Pensión</th><th>S&P 500</th></tr>
       </thead>
       <tbody>
         <tr>
           <td>Impuestos pagados</td>
-          <td id="tax-sp-all"></td><td id="tax-pp-all"></td>
-          <td id="tax-sp-10"></td><td id="tax-pp-10"></td>
-          <td id="tax-sp-20"></td><td id="tax-pp-20"></td>
+          <td id="tax-pp-all"></td><td id="tax-sp-all"></td>
+          <td id="tax-pp-10"></td><td id="tax-sp-10"></td>
+          <td id="tax-pp-20"></td><td id="tax-sp-20"></td>
         </tr>
         <tr class="net">
           <td>Capital neto final</td>
-          <td id="net-sp-all"></td><td id="net-pp-all"></td>
-          <td id="net-sp-10"></td><td id="net-pp-10"></td>
-          <td id="net-sp-20"></td><td id="net-pp-20"></td>
+          <td id="net-pp-all"></td><td id="net-sp-all"></td>
+          <td id="net-pp-10"></td><td id="net-sp-10"></td>
+          <td id="net-pp-20"></td><td id="net-sp-20"></td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="mobile-comparison" aria-label="Comparativa por escenarios">
-    <section class="scenario">
-      <h2 class="scenario-title">Retirar TODO</h2>
-      <div class="scenario-grid">
-        <div class="scenario-col"><div class="product">S&P 500</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-sp-all"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-sp-all"></span></div></div>
-        <div class="scenario-col"><div class="product">Pensión</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-pp-all"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-pp-all"></span></div></div>
-      </div>
-    </section>
-    <section class="scenario">
-      <h2 class="scenario-title">Retirar 10K/año</h2>
-      <div class="scenario-grid">
-        <div class="scenario-col"><div class="product">S&P 500</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-sp-10"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-sp-10"></span></div></div>
-        <div class="scenario-col"><div class="product">Pensión</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-pp-10"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-pp-10"></span></div></div>
-      </div>
-    </section>
-    <section class="scenario">
-      <h2 class="scenario-title">Retirar 20K/año</h2>
-      <div class="scenario-grid">
-        <div class="scenario-col"><div class="product">S&P 500</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-sp-20"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-sp-20"></span></div></div>
-        <div class="scenario-col"><div class="product">Pensión</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-pp-20"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-pp-20"></span></div></div>
-      </div>
-    </section>
+  <div class="mobile-comparison">
+    <section class="scenario"><h2 class="scenario-title">Retirar TODO</h2><div class="scenario-grid">
+      <div class="scenario-col"><div class="product">Pensión</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-pp-all"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-pp-all"></span></div></div>
+      <div class="scenario-col"><div class="product">S&P 500</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-sp-all"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-sp-all"></span></div></div>
+    </div></section>
+    <section class="scenario"><h2 class="scenario-title">Retirar 10K/año</h2><div class="scenario-grid">
+      <div class="scenario-col"><div class="product">Pensión</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-pp-10"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-pp-10"></span></div></div>
+      <div class="scenario-col"><div class="product">S&P 500</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-sp-10"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-sp-10"></span></div></div>
+    </div></section>
+    <section class="scenario"><h2 class="scenario-title">Retirar 20K/año</h2><div class="scenario-grid">
+      <div class="scenario-col"><div class="product">Pensión</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-pp-20"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-pp-20"></span></div></div>
+      <div class="scenario-col"><div class="product">S&P 500</div><div class="metric"><span class="metric-label">Impuestos pagados</span><span class="metric-value" id="m-tax-sp-20"></span></div><div class="metric"><span class="metric-label">Capital neto final</span><span class="metric-value" id="m-net-sp-20"></span></div></div>
+    </div></section>
   </div>
 
-  <p class="note">Supuestos: aportaciones anuales durante 20 años; S&P 500: 3.162,50 €/año; plan de pensiones: 5.750 €/año. La fiscalidad se calcula con los mismos supuestos aproximados usados en esta comparativa: base del ahorro vigente para el fondo y rescate del plan como rendimiento del trabajo sobre una pensión bruta estimada de 24.000 €/año. No se aplica rentabilidad adicional después de los 65 durante la retirada.</p>
-</div>
-</div>
+  <p class="note">Supuestos: horizonte de 20 años. La aportación inicial se realiza en el año 0 y las aportaciones anuales al final de cada uno de los 20 años. El S&P 500 invierte automáticamente el 55 % de las aportaciones del plan, representando el mismo coste neto estimado tras un ahorro fiscal del 45 %. La fiscalidad del rescate mantiene los mismos supuestos aproximados usados en la comparativa anterior y no se aplica rentabilidad adicional después de los 65 durante la retirada.</p>
+</div></div>
 
 <script>
 (() => {
-  const root = document;
-  const years = 20;
-  const spAnnual = 3162.5;
-  const ppAnnual = 5750;
-  const spContributed = spAnnual * years;
-  const ppContributed = ppAnnual * years;
-  const pensionGrossBase = 24000;
-
-  const fmt = n => new Intl.NumberFormat('es-ES',{maximumFractionDigits:0}).format(Math.max(0, Math.round(n))) + ' €';
-
-  function fv(annual, ratePct){
-    const r = ratePct / 100;
-    if (r === 0) return annual * years;
-    return annual * ((Math.pow(1+r, years)-1)/r);
-  }
-
-  function progressiveTax(amount, brackets){
-    let tax = 0, prev = 0, remaining = Math.max(0, amount);
-    for (const [limit, rate] of brackets){
-      if (remaining <= 0) break;
-      const width = limit === Infinity ? remaining : Math.min(remaining, limit-prev);
-      tax += width * rate;
-      remaining -= width;
-      prev = limit;
+  const years=20, equivalence=.55, pensionGrossBase=24000;
+  const fmt=n=>new Intl.NumberFormat('es-ES',{maximumFractionDigits:0}).format(Math.max(0,Math.round(n)))+' €';
+  const val=id=>Number(document.getElementById(id).value);
+  const fv=(initial,annual,ratePct)=>{
+    const r=ratePct/100;
+    const initialFV=initial*Math.pow(1+r,years);
+    const annuityFV=r===0?annual*years:annual*((Math.pow(1+r,years)-1)/r);
+    return initialFV+annuityFV;
+  };
+  function progressiveTax(amount,brackets){
+    let tax=0,prev=0,remaining=Math.max(0,amount);
+    for(const [limit,rate] of brackets){
+      if(remaining<=0)break;
+      const width=limit===Infinity?remaining:Math.min(remaining,limit-prev);
+      tax+=width*rate;remaining-=width;prev=limit;
     }
     return tax;
   }
+  const savingsBrackets=[[6000,.19],[50000,.21],[200000,.23],[300000,.27],[Infinity,.30]];
+  const generalBrackets=[[12450,.19],[20200,.24],[35200,.30],[60000,.37],[300000,.45],[Infinity,.47]];
+  const savingsTax=gain=>progressiveTax(gain,savingsBrackets);
+  const incrementalGeneralTax=w=>progressiveTax(pensionGrossBase+w,generalBrackets)-progressiveTax(pensionGrossBase,generalBrackets);
 
-  const savingsBrackets = [[6000,.19],[50000,.21],[200000,.23],[300000,.27],[Infinity,.30]];
-  const generalBrackets = [[12450,.19],[20200,.24],[35200,.30],[60000,.37],[300000,.45],[Infinity,.47]];
-
-  function savingsTax(gain){
-    return progressiveTax(gain, savingsBrackets);
-  }
-
-  function incrementalGeneralTax(withdrawal){
-    return progressiveTax(pensionGrossBase + withdrawal, generalBrackets) - progressiveTax(pensionGrossBase, generalBrackets);
-  }
-
-  function stagedFundTax(balance, contributed, annualWithdrawal){
-    let remainingBalance = balance;
-    let remainingBasis = Math.min(contributed, balance);
-    let totalTax = 0;
-    let guard = 0;
-    while (remainingBalance > 0.005 && guard < 1000){
-      const w = Math.min(annualWithdrawal, remainingBalance);
-      const gainRatio = remainingBalance > 0 ? Math.max(0, (remainingBalance - remainingBasis) / remainingBalance) : 0;
-      const gain = w * gainRatio;
-      const basisPart = w - gain;
-      totalTax += savingsTax(gain);
-      remainingBalance -= w;
-      remainingBasis = Math.max(0, remainingBasis - basisPart);
-      guard++;
-    }
-    return totalTax;
-  }
-
-  function stagedPensionTax(balance, annualWithdrawal){
-    let remaining = balance, tax = 0, guard = 0;
-    while (remaining > 0.005 && guard < 1000){
-      const w = Math.min(annualWithdrawal, remaining);
-      tax += incrementalGeneralTax(w);
-      remaining -= w;
-      guard++;
+  function stagedFundTax(balance,basis,annualWithdrawal){
+    let b=balance,base=Math.min(basis,balance),tax=0,guard=0;
+    while(b>.005&&guard<1000){
+      const w=Math.min(annualWithdrawal,b);
+      const gainRatio=b>0?Math.max(0,(b-base)/b):0;
+      const gain=w*gainRatio, basisPart=w-gain;
+      tax+=savingsTax(gain);b-=w;base=Math.max(0,base-basisPart);guard++;
     }
     return tax;
   }
-
-  function set(id, value){
-    const el = root.getElementById(id);
-    if (el) el.textContent = value;
+  function stagedPensionTax(balance,annualWithdrawal){
+    let b=balance,tax=0,guard=0;
+    while(b>.005&&guard<1000){
+      const w=Math.min(annualWithdrawal,b);
+      tax+=incrementalGeneralTax(w);b-=w;guard++;
+    }
+    return tax;
   }
-
-  function parseYield(input){
-    const value = Number(input.value);
-    if (!Number.isFinite(value)) return null;
-    return Math.min(30, Math.max(0, Math.round(value * 10) / 10));
-  }
-
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
   function update(){
-    const spInput = root.getElementById('sp500-yield');
-    const ppInput = root.getElementById('pension-yield');
-    const spRate = parseYield(spInput);
-    const ppRate = parseYield(ppInput);
-    const validation = root.getElementById('validation');
-
-    if (spRate === null || ppRate === null){
-      validation.textContent = 'Introduce un rendimiento numérico válido.';
-      return;
+    const ppInitial=val('pp-initial'),ppAnnual=val('pp-annual'),ppRate=val('pp-yield'),spRate=val('sp-yield');
+    const validation=document.getElementById('validation');
+    if([ppInitial,ppAnnual,ppRate,spRate].some(x=>!Number.isFinite(x)||x<0)){
+      validation.textContent='Introduce únicamente valores numéricos positivos o cero.';return;
     }
-    validation.textContent = '';
+    validation.textContent='';
+    const spInitial=ppInitial*equivalence,spAnnual=ppAnnual*equivalence;
+    const ppContributed=ppInitial+ppAnnual*years,spContributed=spInitial+spAnnual*years;
+    const ppFinal=fv(ppInitial,ppAnnual,ppRate),spFinal=fv(spInitial,spAnnual,spRate);
 
-    const spFinal = fv(spAnnual, spRate);
-    const ppFinal = fv(ppAnnual, ppRate);
+    set('sp-initial',fmt(spInitial));set('sp-annual',fmt(spAnnual));
+    set('pp-contributed',fmt(ppContributed));set('sp-contributed',fmt(spContributed));
+    set('pp-final',fmt(ppFinal));set('sp-final',fmt(spFinal));
 
-    set('sp500-final', fmt(spFinal));
-    set('pension-final', fmt(ppFinal));
+    const spGain=Math.max(0,spFinal-spContributed);
+    const spTaxAll=savingsTax(spGain),spTax10=stagedFundTax(spFinal,spContributed,10000),spTax20=stagedFundTax(spFinal,spContributed,20000);
+    const ppTaxAll=incrementalGeneralTax(ppFinal),ppTax10=stagedPensionTax(ppFinal,10000),ppTax20=stagedPensionTax(ppFinal,20000);
 
-    const spGain = Math.max(0, spFinal - spContributed);
-    const spTaxAll = savingsTax(spGain);
-    const spTax10 = stagedFundTax(spFinal, spContributed, 10000);
-    const spTax20 = stagedFundTax(spFinal, spContributed, 20000);
-
-    const ppTaxAll = incrementalGeneralTax(ppFinal);
-    const ppTax10 = stagedPensionTax(ppFinal, 10000);
-    const ppTax20 = stagedPensionTax(ppFinal, 20000);
-
-    const data = {
-      'tax-sp-all':spTaxAll, 'tax-pp-all':ppTaxAll,
-      'tax-sp-10':spTax10, 'tax-pp-10':ppTax10,
-      'tax-sp-20':spTax20, 'tax-pp-20':ppTax20,
-      'net-sp-all':spFinal-spTaxAll, 'net-pp-all':ppFinal-ppTaxAll,
-      'net-sp-10':spFinal-spTax10, 'net-pp-10':ppFinal-ppTax10,
-      'net-sp-20':spFinal-spTax20, 'net-pp-20':ppFinal-ppTax20
+    const data={
+      'tax-pp-all':ppTaxAll,'tax-sp-all':spTaxAll,
+      'tax-pp-10':ppTax10,'tax-sp-10':spTax10,
+      'tax-pp-20':ppTax20,'tax-sp-20':spTax20,
+      'net-pp-all':ppFinal-ppTaxAll,'net-sp-all':spFinal-spTaxAll,
+      'net-pp-10':ppFinal-ppTax10,'net-sp-10':spFinal-spTax10,
+      'net-pp-20':ppFinal-ppTax20,'net-sp-20':spFinal-spTax20
     };
-
-    Object.entries(data).forEach(([id,val]) => {
-      const value = id.startsWith('tax-') ? '~' + fmt(val) : '~' + fmt(val);
-      set(id, value);
-      set('m-'+id, value);
-    });
-
-    ['net-sp-all','net-pp-all','net-sp-10','net-pp-10','net-sp-20','net-pp-20'].forEach(id => {
-      const el = root.getElementById(id);
-      const mel = root.getElementById('m-'+id);
-      if (el) el.classList.remove('best');
-      if (mel) mel.classList.remove('best');
-    });
-    const netIds = ['net-sp-all','net-pp-all','net-sp-10','net-pp-10','net-sp-20','net-pp-20'];
-    let bestId = netIds[0];
-    for (const id of netIds) if (data[id] > data[bestId]) bestId = id;
-    root.getElementById(bestId)?.classList.add('best');
-    root.getElementById('m-'+bestId)?.classList.add('best');
+    Object.entries(data).forEach(([id,n])=>{const t='~'+fmt(n);set(id,t);set('m-'+id,t)});
+    const netIds=['net-pp-all','net-sp-all','net-pp-10','net-sp-10','net-pp-20','net-sp-20'];
+    netIds.forEach(id=>{document.getElementById(id)?.classList.remove('best');document.getElementById('m-'+id)?.classList.remove('best')});
+    let best=netIds[0];netIds.forEach(id=>{if(data[id]>data[best])best=id});
+    document.getElementById(best)?.classList.add('best');document.getElementById('m-'+best)?.classList.add('best');
   }
-
-  ['sp500-yield','pension-yield'].forEach(id => {
-    const input = root.getElementById(id);
-    input.addEventListener('input', update);
-    input.addEventListener('change', () => {
-      const parsed = parseYield(input);
-      if (parsed !== null) input.value = parsed.toFixed(1);
+  ['pp-initial','pp-annual','pp-yield','sp-yield'].forEach(id=>{
+    const e=document.getElementById(id);
+    e.addEventListener('input',update);
+    e.addEventListener('change',()=>{
+      if(id.endsWith('yield')&&Number.isFinite(Number(e.value)))e.value=(Math.round(Number(e.value)*10)/10).toFixed(1);
       update();
     });
   });
-
   update();
 })();
 </script>
