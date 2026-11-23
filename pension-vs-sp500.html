@@ -25,6 +25,10 @@ h1{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.02em}
 .input-wrap{position:relative}
 .input{width:100%;height:40px;border:1px solid #d0d5dd;border-radius:9px;padding:0 30px 0 10px;background:#fff;color:var(--text);font:inherit;font-size:17px;font-weight:700;outline:none;text-align:center}
 .input:focus{border-color:#98a2b3;box-shadow:0 0 0 3px rgba(152,162,179,.15)}
+.stepper{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;height:40px;border:1px solid #d0d5dd;border-radius:9px;overflow:hidden;background:#fff}
+.stepper-btn{height:100%;border:0;background:#f8fafc;color:var(--text);font:inherit;font-size:20px;font-weight:800;cursor:pointer;touch-action:manipulation}
+.stepper-btn:active{background:#eef2f6}
+.stepper-value{display:flex;align-items:center;justify-content:center;height:100%;border-left:1px solid var(--line);border-right:1px solid var(--line);font-size:17px;font-weight:700;color:var(--text);white-space:nowrap}
 .suffix{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
 .readonly{height:40px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;padding:9px 10px;font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
 .details{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.45}
@@ -83,7 +87,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
   .summary{grid-template-columns:1fr 1fr;gap:8px;padding:16px 10px}.summary-item{padding:12px 10px;border-radius:12px;min-width:0}
   .summary-title{font-size:15px;white-space:nowrap}.fields{grid-template-columns:1fr;gap:7px}.field:last-child{grid-column:auto}
   .field label{font-size:9px;line-height:1.15;min-height:auto;margin-bottom:4px}
-  .input{height:40px;font-size:17px;padding-left:7px;padding-right:22px}.readonly{height:40px;padding:8px 5px 0;font-size:17px;text-align:center}.suffix{right:6px;font-size:12px}
+  .input{height:40px;font-size:17px;padding-left:7px;padding-right:22px}.readonly{height:40px;padding:8px 5px 0;font-size:17px;text-align:center}.suffix{right:6px;font-size:12px}.stepper{grid-template-columns:36px 1fr 36px}.stepper-btn{font-size:20px}.stepper-value{font-size:16px}
   .details{font-size:12px;line-height:1.4}.details strong{font-size:17px}
   .chart-section{padding:18px 14px 8px}.chart-head{display:block}.legend{margin-top:10px}.chart-card{padding:10px}.table-wrap{display:none}.mobile-comparison{display:block;padding:16px 14px 20px}
   .scenario{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px;background:#fff}.scenario:last-child{margin-bottom:0}
@@ -122,7 +126,12 @@ thead tr:first-child th{text-align:center;font-size:15px}
         </div>
         <div class="field">
           <label for="pp-yield">Rendimiento</label>
-          <div class="input-wrap"><input id="pp-yield" class="input" type="number" min="0" max="30" step="0.1" value="7.0" inputmode="decimal"><span class="suffix">%</span></div>
+          <div class="stepper" data-target="pp-yield">
+  <button type="button" class="stepper-btn" data-step="-0.1" aria-label="Reducir rendimiento del plan de pensiones">−</button>
+  <span class="stepper-value" id="pp-yield-display">7,0 %</span>
+  <button type="button" class="stepper-btn" data-step="0.1" aria-label="Aumentar rendimiento del plan de pensiones">+</button>
+</div>
+<input id="pp-yield" type="hidden" value="7.0">
         </div>
       </div>
       <div class="details"><span class="details-line"><span class="details-label">Total aportado</span><span class="details-value" id="pp-contributed"></span></span><span class="details-line"><span class="details-label">Capital bruto final</span><span class="details-value" id="pp-final"></span></span></div>
@@ -141,7 +150,12 @@ thead tr:first-child th{text-align:center;font-size:15px}
         </div>
         <div class="field">
           <label for="sp-yield">Rendimiento</label>
-          <div class="input-wrap"><input id="sp-yield" class="input" type="number" min="0" max="30" step="0.1" value="10.0" inputmode="decimal"><span class="suffix">%</span></div>
+          <div class="stepper" data-target="sp-yield">
+  <button type="button" class="stepper-btn" data-step="-0.1" aria-label="Reducir rendimiento del S&amp;P 500">−</button>
+  <span class="stepper-value" id="sp-yield-display">10,0 %</span>
+  <button type="button" class="stepper-btn" data-step="0.1" aria-label="Aumentar rendimiento del S&amp;P 500">+</button>
+</div>
+<input id="sp-yield" type="hidden" value="10.0">
         </div>
       </div>
       <div class="details"><span class="details-line"><span class="details-label">Total aportado</span><span class="details-value" id="sp-contributed"></span></span><span class="details-line"><span class="details-label">Capital bruto final</span><span class="details-value" id="sp-final"></span></span></div>
@@ -382,13 +396,29 @@ thead tr:first-child th{text-align:center;font-size:15px}
     update();
   });
 
-  ['pp-initial','pp-annual','pp-yield','sp-yield'].forEach(id=>{
-    const e=document.getElementById(id);
-    e.addEventListener('input',update);
-    e.addEventListener('change',()=>{
-      if(id.endsWith('yield')&&Number.isFinite(Number(e.value)))e.value=(Math.round(Number(e.value)*10)/10).toFixed(1);
+  const renderYieldDisplay=id=>{
+    const n=Number(document.getElementById(id)?.value||0);
+    set(id+'-display',n.toFixed(1).replace('.',',')+' %');
+  };
+  document.querySelectorAll('.stepper-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const stepper=btn.closest('.stepper');
+      const id=stepper?.dataset.target;
+      const input=id?document.getElementById(id):null;
+      if(!input)return;
+      const next=Math.max(0,Math.min(30,Math.round((Number(input.value)+Number(btn.dataset.step))*10)/10));
+      input.value=next.toFixed(1);
+      renderYieldDisplay(id);
       update();
     });
+  });
+  renderYieldDisplay('pp-yield');
+  renderYieldDisplay('sp-yield');
+
+  ['pp-initial','pp-annual'].forEach(id=>{
+    const e=document.getElementById(id);
+    e.addEventListener('input',update);
+    e.addEventListener('change',update);
   });
   update();
 })();
