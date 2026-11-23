@@ -260,17 +260,17 @@ thead tr:first-child th{text-align:center;font-size:15px}
     const grid=gridVals.map(v=>{
       const yy=y(v);
       const label=new Intl.NumberFormat('es-ES',{notation:'compact',maximumFractionDigits:1}).format(v)+' €';
-      return '<line x1="'+pad.l+'" y1="'+yy+'" x2="'+(width-pad.r)+'" y2="'+yy+'" stroke="#e7e9ee" stroke-width="1"/><text x="'+(pad.l-10)+'" y="'+(yy+4)+'" text-anchor="end" fill="#667085" font-size="12">'+label+'</text>';
+      return '<line x1="'+pad.l+'" y1="'+yy+'" x2="'+(width-pad.r)+'" y2="'+yy+'" stroke="#e7e9ee" stroke-width="1"/><text x="'+(pad.l-10)+'" y="'+(yy+4)+'" text-anchor="end" fill="#667085" font-size="24">'+label+'</text>';
     }).join('');
     const tickCandidates=[0,Math.round(years*.25),Math.round(years*.5),Math.round(years*.75),years];
-    const xTicks=[...new Set(tickCandidates)].map(t=>'<line x1="'+x(t)+'" y1="'+(height-pad.b)+'" x2="'+x(t)+'" y2="'+(height-pad.b+5)+'" stroke="#98a2b3" stroke-width="1"/><text x="'+x(t)+'" y="'+(height-pad.b+20)+'" text-anchor="middle" fill="#667085" font-size="12">'+t+'</text>').join('');
+    const xTicks=[...new Set(tickCandidates)].map(t=>'<line x1="'+x(t)+'" y1="'+(height-pad.b)+'" x2="'+x(t)+'" y2="'+(height-pad.b+5)+'" stroke="#98a2b3" stroke-width="1"/><text x="'+x(t)+'" y="'+(height-pad.b+20)+'" text-anchor="middle" fill="#667085" font-size="24">'+t+'</text>').join('');
     svg.innerHTML=
       '<rect x="0" y="0" width="'+width+'" height="'+height+'" fill="#fff" rx="10"></rect>'+
       grid+
       '<line x1="'+pad.l+'" y1="'+(height-pad.b)+'" x2="'+(width-pad.r)+'" y2="'+(height-pad.b)+'" stroke="#98a2b3" stroke-width="1.2"></line>'+
       '<line x1="'+pad.l+'" y1="'+pad.t+'" x2="'+pad.l+'" y2="'+(height-pad.b)+'" stroke="#98a2b3" stroke-width="1.2"></line>'+
       xTicks+
-      '<text x="'+(width/2)+'" y="'+(height-8)+'" text-anchor="middle" fill="#667085" font-size="12">Años</text>'+
+      '<text x="'+(width/2)+'" y="'+(height-8)+'" text-anchor="middle" fill="#667085" font-size="24">Años</text>'+
       '<path d="'+path(ppSeries)+'" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>'+
       '<path d="'+path(spSeries)+'" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>';
   }
