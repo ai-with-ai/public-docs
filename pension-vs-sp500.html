@@ -287,6 +287,20 @@ thead tr:first-child th{text-align:center;font-size:15px}
       '<path d="'+path(spSeries)+'" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>';
   }
 
+  function updateWithdrawalResults(ppFinal,spFinal,spContributed,customWithdrawal,updateSp=true){
+    const sliderTaxPp=stagedPensionTax(ppFinal,customWithdrawal);
+    const ppTaxPct=ppFinal>0?(sliderTaxPp/ppFinal*100):0;
+    set('slider-tax-pp','~'+fmt(sliderTaxPp)+' · '+ppTaxPct.toFixed(1).replace('.',',')+' %');
+    set('slider-net-pp','~'+fmt(ppFinal-sliderTaxPp));
+
+    if(updateSp){
+      const sliderTaxSp=stagedFundTax(spFinal,spContributed,customWithdrawal);
+      const spTaxPct=spFinal>0?(sliderTaxSp/spFinal*100):0;
+      set('slider-tax-sp','~'+fmt(sliderTaxSp)+' · '+spTaxPct.toFixed(1).replace('.',',')+' %');
+      set('slider-net-sp','~'+fmt(spFinal-sliderTaxSp));
+    }
+  }
+
   function update(){
     const years=getYears();
     const ppInitial=val('pp-initial'),ppAnnual=val('pp-annual'),ppRate=val('pp-yield'),spRate=val('sp-yield');
@@ -307,14 +321,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
     renderChart(accumulationSeries(ppInitial,ppAnnual,ppRate,years),accumulationSeries(spInitial,spAnnual,spRate,years),years);
 
     set('withdrawal-selected',fmt(customWithdrawal)+'/año');
-    const sliderTaxSp=stagedFundTax(spFinal,spContributed,customWithdrawal);
-    const sliderTaxPp=stagedPensionTax(ppFinal,customWithdrawal);
-    const ppTaxPct=ppFinal>0?(sliderTaxPp/ppFinal*100):0;
-    const spTaxPct=spFinal>0?(sliderTaxSp/spFinal*100):0;
-    set('slider-tax-sp','~'+fmt(sliderTaxSp)+' · '+spTaxPct.toFixed(1).replace('.',',')+' %');
-    set('slider-tax-pp','~'+fmt(sliderTaxPp)+' · '+ppTaxPct.toFixed(1).replace('.',',')+' %');
-    set('slider-net-sp','~'+fmt(spFinal-sliderTaxSp));
-    set('slider-net-pp','~'+fmt(ppFinal-sliderTaxPp));
+    updateWithdrawalResults(ppFinal,spFinal,spContributed,customWithdrawal,true);
 
     const spGain=Math.max(0,spFinal-spContributed);
     const spTaxAll=savingsTax(spGain),spTax10=stagedFundTax(spFinal,spContributed,10000),spTax20=stagedFundTax(spFinal,spContributed,customWithdrawal);
@@ -339,10 +346,20 @@ thead tr:first-child th{text-align:center;font-size:15px}
   withdrawalRange?.addEventListener('change',update);
 
   const pensionIncomeInput=document.getElementById('pension-income-input');
-  pensionIncomeInput?.addEventListener('input',update);
+  const updatePensionOnly=()=>{
+    const years=getYears();
+    const ppInitial=val('pp-initial'),ppAnnual=val('pp-annual'),ppRate=val('pp-yield'),spRate=val('sp-yield');
+    const spInitial=ppInitial*equivalence,spAnnual=ppAnnual*equivalence;
+    const spContributed=spInitial+spAnnual*years;
+    const ppFinal=fv(ppInitial,ppAnnual,ppRate,years);
+    const spFinal=fv(spInitial,spAnnual,spRate,years);
+    const customWithdrawal=Number(document.getElementById('withdrawal-range')?.value||20000);
+    updateWithdrawalResults(ppFinal,spFinal,spContributed,customWithdrawal,false);
+  };
+  pensionIncomeInput?.addEventListener('input',updatePensionOnly);
   pensionIncomeInput?.addEventListener('change',()=>{
     pensionIncomeInput.value=Math.max(0,Math.round(Number(pensionIncomeInput.value)||0));
-    update();
+    updatePensionOnly();
   });
 
   const yearsInput=document.getElementById('years-input');
