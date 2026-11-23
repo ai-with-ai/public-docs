@@ -46,7 +46,9 @@ h1{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.02em}
 .pension-income-range{width:100%;accent-color:#475467}
 .withdrawal-results{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .result-card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px 16px}
-.result-title{font-size:14px;font-weight:700;margin-bottom:10px}
+.result-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.result-title{font-size:14px;font-weight:700;margin:0}
+.result-tax-pct{font-size:16px;font-weight:800;color:var(--text);white-space:nowrap}
 .result-row + .result-row{margin-top:10px}
 .result-label{display:block;color:var(--muted);font-size:12px;line-height:1.2}
 .result-value{display:block;margin-top:2px;color:var(--text);font-size:18px;font-weight:800;line-height:1.2}
@@ -110,7 +112,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
 
   <div class="summary">
     <section class="summary-item">
-      <div class="summary-title">Plan de pensiones</div>
+      <div class="summary-title">P. Pensiones</div>
       <div class="fields">
         <div class="field">
           <label for="pp-initial">Aportación inicial (año 0)</label>
@@ -170,12 +172,12 @@ thead tr:first-child th{text-align:center;font-size:15px}
 
     <div class="withdrawal-results">
       <div class="result-card">
-        <div class="result-title">Plan de pensiones</div>
+        <div class="result-head"><div class="result-title">P. Pensiones</div><div class="result-tax-pct" id="slider-tax-pct-pp"></div></div>
         <div class="result-row"><span class="result-label">Impuestos pagados</span><span class="result-value" id="slider-tax-pp"></span></div>
         <div class="result-row"><span class="result-label">Capital neto recuperado</span><span class="result-value" id="slider-net-pp"></span></div>
       </div>
       <div class="result-card">
-        <div class="result-title">S&amp;P 500</div>
+        <div class="result-head"><div class="result-title">S&amp;P 500</div><div class="result-tax-pct" id="slider-tax-pct-sp"></div></div>
         <div class="result-row"><span class="result-label">Impuestos pagados</span><span class="result-value" id="slider-tax-sp"></span></div>
         <div class="result-row"><span class="result-label">Capital neto recuperado</span><span class="result-value" id="slider-net-sp"></span></div>
       </div>
@@ -191,7 +193,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
         <p class="chart-subtitle">Capital acumulado año por año durante la fase de aportación.</p>
       </div>
       <div class="legend">
-        <div class="legend-item"><span class="swatch pension-swatch"></span>Plan de pensiones</div>
+        <div class="legend-item"><span class="swatch pension-swatch"></span>P. Pensiones</div>
         <div class="legend-item"><span class="swatch sp-swatch"></span>S&amp;P 500</div>
       </div>
     </div>
@@ -292,13 +294,15 @@ thead tr:first-child th{text-align:center;font-size:15px}
   function updateWithdrawalResults(ppFinal,spFinal,spContributed,customWithdrawal,updateSp=true){
     const sliderTaxPp=stagedPensionTax(ppFinal,customWithdrawal);
     const ppTaxPct=ppFinal>0?(sliderTaxPp/ppFinal*100):0;
-    set('slider-tax-pp','~'+fmt(sliderTaxPp)+' · '+ppTaxPct.toFixed(1).replace('.',',')+' %');
+    set('slider-tax-pct-pp',ppTaxPct.toFixed(1).replace('.',',')+' %');
+    set('slider-tax-pp','~'+fmt(sliderTaxPp));
     set('slider-net-pp','~'+fmt(ppFinal-sliderTaxPp));
 
     if(updateSp){
       const sliderTaxSp=stagedFundTax(spFinal,spContributed,customWithdrawal);
       const spTaxPct=spFinal>0?(sliderTaxSp/spFinal*100):0;
-      set('slider-tax-sp','~'+fmt(sliderTaxSp)+' · '+spTaxPct.toFixed(1).replace('.',',')+' %');
+      set('slider-tax-pct-sp',spTaxPct.toFixed(1).replace('.',',')+' %');
+      set('slider-tax-sp','~'+fmt(sliderTaxSp));
       set('slider-net-sp','~'+fmt(spFinal-sliderTaxSp));
     }
   }
