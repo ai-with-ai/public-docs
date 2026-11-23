@@ -62,9 +62,56 @@
     border-radius:14px;
     background:white;
   }
-  .summary-item strong{font-size:18px}
-  .summary-item div{
-    margin-top:6px;
+  .summary-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .summary-head > strong{font-size:18px}
+  .yield-field{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    flex:0 0 auto;
+  }
+  .yield-field label{
+    color:var(--muted);
+    font-size:12px;
+    font-weight:600;
+  }
+  .yield-input-wrap{
+    position:relative;
+    width:78px;
+  }
+  .yield-input{
+    width:100%;
+    height:34px;
+    border:1px solid #d0d5dd;
+    border-radius:9px;
+    padding:0 25px 0 10px;
+    background:#fff;
+    color:var(--text);
+    font:inherit;
+    font-size:14px;
+    font-weight:600;
+    outline:none;
+  }
+  .yield-input:focus{
+    border-color:#98a2b3;
+    box-shadow:0 0 0 3px rgba(152,162,179,.15);
+  }
+  .yield-suffix{
+    position:absolute;
+    right:9px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--muted);
+    font-size:13px;
+    pointer-events:none;
+  }
+  .summary-item .details{
+    margin-top:8px;
     color:var(--muted);
     font-size:14px;
     line-height:1.45;
@@ -151,8 +198,20 @@
       padding:14px 15px;
       border-radius:12px;
     }
-    .summary-item strong{font-size:17px}
-    .summary-item div{font-size:14px}
+    .summary-head{
+      align-items:flex-start;
+    }
+    .summary-head > strong{font-size:17px}
+    .yield-field{
+      gap:6px;
+    }
+    .yield-field label{font-size:11px}
+    .yield-input-wrap{width:72px}
+    .yield-input{
+      height:32px;
+      font-size:13px;
+    }
+    .summary-item .details{font-size:14px}
 
     .table-wrap{display:none}
     .mobile-comparison{
@@ -217,6 +276,8 @@
 
   @media(max-width:380px){
     h1{font-size:22px}
+    .summary-head{display:block}
+    .yield-field{margin-top:10px}
     .scenario-col{padding:12px 10px}
     .metric-value{font-size:15px}
   }
@@ -232,12 +293,30 @@
 
     <div class="summary">
       <div class="summary-item">
-        <strong>S&P 500</strong>
-        <div>Aportado <strong>63.250 €</strong> al <strong>11,0 %</strong> → total final: <strong>203.041 €</strong></div>
+        <div class="summary-head">
+          <strong>S&P 500</strong>
+          <div class="yield-field">
+            <label for="sp500-yield">Rendimiento</label>
+            <div class="yield-input-wrap">
+              <input id="sp500-yield" class="yield-input" type="text" inputmode="decimal" value="11,0" aria-label="Rendimiento S&P 500">
+              <span class="yield-suffix">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="details">Aportado <strong>63.250 €</strong> → total final: <strong>203.041 €</strong></div>
       </div>
       <div class="summary-item">
-        <strong>Plan de pensiones</strong>
-        <div>Aportado <strong>115.000 €</strong> al <strong>6,1 %</strong> → total final: <strong>213.805 €</strong></div>
+        <div class="summary-head">
+          <strong>Plan de pensiones</strong>
+          <div class="yield-field">
+            <label for="pension-yield">Rendimiento</label>
+            <div class="yield-input-wrap">
+              <input id="pension-yield" class="yield-input" type="text" inputmode="decimal" value="6,1" aria-label="Rendimiento plan de pensiones">
+              <span class="yield-suffix">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="details">Aportado <strong>115.000 €</strong> → total final: <strong>213.805 €</strong></div>
       </div>
     </div>
 
