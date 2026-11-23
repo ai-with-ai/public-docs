@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparativa S&P 500 vs Plan de Pensiones</title>
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --text:#171923;
+    --muted:#667085;
+    --line:#e7e9ee;
+    --good:#067647;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .wrap{
+    max-width:1100px;
+    margin:48px auto;
+    padding:0 20px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:0 8px 28px rgba(16,24,40,.06);
+    overflow:hidden;
+  }
+  .header{
+    padding:30px 32px 22px;
+    border-bottom:1px solid var(--line);
+  }
+  h1{
+    margin:0 0 10px;
+    font-size:28px;
+    line-height:1.2;
+    letter-spacing:-.02em;
+  }
+  .subtitle{
+    margin:0;
+    color:var(--muted);
+    line-height:1.55;
+  }
+  .summary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    padding:22px 32px;
+    background:#fbfcfe;
+    border-bottom:1px solid var(--line);
+  }
+  .summary-item{
+    padding:16px 18px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:white;
+  }
+  .summary-item strong{
+    font-size:18px;
+  }
+  .summary-item div{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .table-wrap{
+    overflow-x:auto;
+    padding:24px 32px 30px;
+  }
+  table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    min-width:820px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  th, td{
+    padding:16px 14px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    text-align:right;
+    white-space:nowrap;
+  }
+  th:first-child, td:first-child{
+    text-align:left;
+    font-weight:600;
+  }
+  th:last-child, td:last-child{border-right:none}
+  tr:last-child td{border-bottom:none}
+  thead th{
+    background:#f8fafc;
+    font-size:14px;
+  }
+  thead tr:first-child th{
+    text-align:center;
+    font-size:15px;
+  }
+  .net td{
+    font-weight:700;
+    font-size:16px;
+  }
+  .best{
+    color:var(--good);
+  }
+  .note{
+    margin:0;
+    padding:0 32px 30px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.55;
+  }
+  @media(max-width:700px){
+    .wrap{margin:20px auto;padding:0 10px}
+    .header,.summary,.table-wrap{padding-left:18px;padding-right:18px}
+    .summary{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="header">
+      <h1>S&P 500 vs Plan de Pensiones</h1>
+      <p class="subtitle">Comparativa estimada a 20 años hasta los 65, incluyendo distintos escenarios de retirada.</p>
+    </div>
+
+    <div class="summary">
+      <div class="summary-item">
+        <strong>S&P 500</strong>
+        <div>Aportado <strong>63.250 €</strong> al <strong>11,0 %</strong> → total final: <strong>203.041 €</strong></div>
+      </div>
+      <div class="summary-item">
+        <strong>Plan de pensiones</strong>
+        <div>Aportado <strong>115.000 €</strong> al <strong>6,1 %</strong> → total final: <strong>213.805 €</strong></div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2"></th>
+            <th colspan="2">TODO</th>
+            <th colspan="2">Retirar 10K/año</th>
+            <th colspan="2">Retirar 20K/año</th>
+          </tr>
+          <tr>
+            <th>S&P 500</th><th>Pensión</th>
+            <th>S&P 500</th><th>Pensión</th>
+            <th>S&P 500</th><th>Pensión</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Impuestos pagados</td>
+            <td>~31.032 €</td>
+            <td>~92.250 €</td>
+            <td>~26.916 €</td>
+            <td>~64.142 €</td>
+            <td>~28.114 €</td>
+            <td>~68.944 €</td>
+          </tr>
+          <tr class="net">
+            <td>Capital neto final</td>
+            <td>~172.009 €</td>
+            <td>~121.555 €</td>
+            <td class="best">~176.125 €</td>
+            <td>~149.663 €</td>
+            <td>~174.927 €</td>
+            <td>~144.861 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note">
+      Supuestos utilizados en la conversación: rentabilidades históricas aproximadas, fiscalidad actual como referencia y sin rentabilidad adicional del capital pendiente después de los 65 durante el periodo de retirada. Son estimaciones, no una previsión de rentabilidad futura ni asesoramiento fiscal individual.
+    </p>
+  </div>
+</div>
+</body>
+</html>
