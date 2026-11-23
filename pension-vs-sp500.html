@@ -39,6 +39,12 @@ h1{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.02em}
 .withdrawal-selected{font-size:20px;font-weight:800;color:var(--text);white-space:nowrap}
 .withdrawal-range{width:100%;accent-color:#475467}
 .withdrawal-ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:4px}
+.pension-income{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.pension-income label{color:var(--muted);font-size:12px;font-weight:600}
+.pension-income-wrap{position:relative;width:150px}
+.pension-income-input{width:100%;height:38px;border:1px solid #d0d5dd;border-radius:9px;padding:0 28px 0 10px;text-align:center;font:inherit;font-size:16px;font-weight:700;color:var(--text);background:#fff;outline:none}
+.pension-income-input:focus{border-color:#98a2b3;box-shadow:0 0 0 3px rgba(152,162,179,.15)}
+.pension-income-suffix{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;pointer-events:none}
 .withdrawal-results{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .result-card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px 16px}
 .result-title{font-size:14px;font-weight:700;margin-bottom:10px}
@@ -89,7 +95,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
   .scenario-grid{display:grid;grid-template-columns:1fr 1fr}.scenario-col{padding:14px;min-width:0}.scenario-col+.scenario-col{border-left:1px solid var(--line)}
   .product{font-size:13px;font-weight:700;margin-bottom:12px}.metric{margin-bottom:12px}.metric:last-child{margin-bottom:0}
   .metric-label{display:block;color:var(--muted);font-size:12px;line-height:1.3;margin-bottom:3px}.metric-value{display:block;font-size:16px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
-  .withdrawal-section{padding-top:14px}.withdrawal-head{align-items:center}.withdrawal-label{font-size:12px}.withdrawal-selected{font-size:18px}.withdrawal-ticks{font-size:8px}.withdrawal-results{gap:8px}.result-card{padding:12px 10px}.result-title{font-size:13px}.result-label{font-size:10px}.result-value{font-size:17px}.note{padding:0 18px 24px;font-size:12px}.validation{padding:0 18px 10px}
+  .withdrawal-section{padding-top:14px}.withdrawal-head{align-items:center}.withdrawal-label{font-size:12px}.withdrawal-selected{font-size:18px}.withdrawal-ticks{font-size:8px}.pension-income{align-items:center}.pension-income label{font-size:10px}.pension-income-wrap{width:120px}.pension-income-input{font-size:15px}.withdrawal-results{gap:8px}.result-card{padding:12px 10px}.result-title{font-size:13px}.result-label{font-size:10px}.result-value{font-size:17px}.note{padding:0 18px 24px;font-size:12px}.validation{padding:0 18px 10px}
 }
 @media(max-width:359px){
   h1{font-size:21px}.summary{grid-template-columns:1fr 1fr;gap:6px;padding-left:6px;padding-right:6px}.summary-item{padding:10px 7px}.summary-title{font-size:13px}.field label{font-size:8px}.input{font-size:16px;padding-left:5px}.readonly{font-size:16px}.details{font-size:11px}.details strong{font-size:16px}.scenario-col{padding:12px 10px}.metric-value{font-size:15px}
@@ -151,6 +157,13 @@ thead tr:first-child th{text-align:center;font-size:15px}
       <div class="withdrawal-ticks">
         <span>10K</span><span>20K</span><span>30K</span><span>40K</span><span>50K</span><span>60K</span><span>70K</span><span>80K</span><span>90K</span><span>100K</span>
       </div>
+      <div class="pension-income">
+        <label for="pension-income-input">Pensión estimada al año</label>
+        <div class="pension-income-wrap">
+          <input id="pension-income-input" class="pension-income-input" type="number" min="0" step="1000" value="24000" inputmode="numeric">
+          <span class="pension-income-suffix">€</span>
+        </div>
+      </div>
     </section>
 
     <div class="withdrawal-results">
@@ -190,7 +203,8 @@ thead tr:first-child th{text-align:center;font-size:15px}
 
 <script>
 (() => {
-  const equivalence=.55, pensionGrossBase=24000;
+  const equivalence=.55;
+  const getPensionBase=()=>Math.max(0,Number(document.getElementById('pension-income-input')?.value)||0);
   const getYears=()=>Math.max(1,Math.min(60,Math.round(Number(document.getElementById('years-input')?.value)||20)));
   const fmt=n=>new Intl.NumberFormat('es-ES',{maximumFractionDigits:0}).format(Math.max(0,Math.round(n)))+' €';
   const val=id=>Number(document.getElementById(id).value);
@@ -212,7 +226,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
   const savingsBrackets=[[6000,.19],[50000,.21],[200000,.23],[300000,.27],[Infinity,.30]];
   const generalBrackets=[[12450,.19],[20200,.24],[35200,.30],[60000,.37],[300000,.45],[Infinity,.47]];
   const savingsTax=gain=>progressiveTax(gain,savingsBrackets);
-  const incrementalGeneralTax=w=>progressiveTax(pensionGrossBase+w,generalBrackets)-progressiveTax(pensionGrossBase,generalBrackets);
+  const incrementalGeneralTax=w=>{const pensionGrossBase=getPensionBase();return progressiveTax(pensionGrossBase+w,generalBrackets)-progressiveTax(pensionGrossBase,generalBrackets);};
 
   function stagedFundTax(balance,basis,annualWithdrawal){
     let b=balance,base=Math.min(basis,balance),tax=0,guard=0;
@@ -295,8 +309,10 @@ thead tr:first-child th{text-align:center;font-size:15px}
     set('withdrawal-selected',fmt(customWithdrawal)+'/año');
     const sliderTaxSp=stagedFundTax(spFinal,spContributed,customWithdrawal);
     const sliderTaxPp=stagedPensionTax(ppFinal,customWithdrawal);
-    set('slider-tax-sp','~'+fmt(sliderTaxSp));
-    set('slider-tax-pp','~'+fmt(sliderTaxPp));
+    const ppTaxPct=ppFinal>0?(sliderTaxPp/ppFinal*100):0;
+    const spTaxPct=spFinal>0?(sliderTaxSp/spFinal*100):0;
+    set('slider-tax-sp','~'+fmt(sliderTaxSp)+' · '+spTaxPct.toFixed(1).replace('.',',')+' %');
+    set('slider-tax-pp','~'+fmt(sliderTaxPp)+' · '+ppTaxPct.toFixed(1).replace('.',',')+' %');
     set('slider-net-sp','~'+fmt(spFinal-sliderTaxSp));
     set('slider-net-pp','~'+fmt(ppFinal-sliderTaxPp));
 
@@ -321,6 +337,13 @@ thead tr:first-child th{text-align:center;font-size:15px}
   const withdrawalRange=document.getElementById('withdrawal-range');
   withdrawalRange?.addEventListener('input',update);
   withdrawalRange?.addEventListener('change',update);
+
+  const pensionIncomeInput=document.getElementById('pension-income-input');
+  pensionIncomeInput?.addEventListener('input',update);
+  pensionIncomeInput?.addEventListener('change',()=>{
+    pensionIncomeInput.value=Math.max(0,Math.round(Number(pensionIncomeInput.value)||0));
+    update();
+  });
 
   const yearsInput=document.getElementById('years-input');
   yearsInput?.addEventListener('input',update);
