@@ -257,7 +257,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
     const gridVals=[0,.25,.5,.75,1].map(v=>niceMax*v);
     const grid=gridVals.map(v=>{
       const yy=y(v);
-      const label=new Intl.NumberFormat('es-ES',{notation:'compact',maximumFractionDigits:1}).format(v)+' €';
+      const label=v===0?'0 €':(Math.round(v/1000)+'K');
       return '<line x1="'+pad.l+'" y1="'+yy+'" x2="'+(width-pad.r)+'" y2="'+yy+'" stroke="#e7e9ee" stroke-width="1"/><text x="'+(pad.l-10)+'" y="'+(yy+4)+'" text-anchor="end" fill="#667085" font-size="24">'+label+'</text>';
     }).join('');
     const tickCandidates=[0,Math.round(years*.25),Math.round(years*.5),Math.round(years*.75),years];
