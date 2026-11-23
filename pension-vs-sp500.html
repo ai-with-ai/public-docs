@@ -34,16 +34,14 @@ h1{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.02em}
 .details-value{display:block;margin-top:2px;color:var(--text);font-size:17px;font-weight:700;line-height:1.2}
 .details strong{color:var(--text);font-size:17px;font-weight:700}
 .withdrawal-section{grid-column:1/-1;border-top:1px solid var(--line);margin-top:4px;padding-top:18px}
-.withdrawal-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px}
-.withdrawal-label{font-size:14px;font-weight:700;color:var(--text)}
-.withdrawal-selected{font-size:20px;font-weight:800;color:var(--text);white-space:nowrap}
-.withdrawal-range{width:100%;accent-color:#475467}
-.withdrawal-ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:4px}
-.pension-income{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
-.pension-income-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:8px}
-.pension-income label{color:var(--muted);font-size:12px;font-weight:600}
-.pension-income-value{font-size:18px;font-weight:800;color:var(--text);white-space:nowrap}
-.pension-income-range{width:100%;accent-color:#475467}
+.withdrawal-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.withdrawal-control-block{min-width:0}
+.withdrawal-head,.pension-income-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.withdrawal-label,.pension-income label{font-size:12px;font-weight:700;color:var(--text)}
+.withdrawal-selected,.pension-income-value{font-size:16px;font-weight:800;color:var(--text);white-space:nowrap}
+.withdrawal-range,.pension-income-range{width:100%;accent-color:#475467}
+.withdrawal-ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:9px;margin-top:3px}
+.pension-income{margin:0;padding:0;border:0}
 .withdrawal-results{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .result-card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px 16px}
 .result-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
@@ -96,7 +94,7 @@ thead tr:first-child th{text-align:center;font-size:15px}
   .scenario-grid{display:grid;grid-template-columns:1fr 1fr}.scenario-col{padding:14px;min-width:0}.scenario-col+.scenario-col{border-left:1px solid var(--line)}
   .product{font-size:13px;font-weight:700;margin-bottom:12px}.metric{margin-bottom:12px}.metric:last-child{margin-bottom:0}
   .metric-label{display:block;color:var(--muted);font-size:12px;line-height:1.3;margin-bottom:3px}.metric-value{display:block;font-size:16px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
-  .withdrawal-section{padding-top:14px}.withdrawal-head{align-items:center}.withdrawal-label{font-size:12px}.withdrawal-selected{font-size:18px}.withdrawal-ticks{font-size:8px}.pension-income label{font-size:10px}.pension-income-value{font-size:17px}.withdrawal-results{gap:8px}.result-card{padding:12px 10px}.result-title{font-size:13px}.result-label{font-size:10px}.result-value{font-size:17px}.note{padding:0 18px 24px;font-size:12px}.validation{padding:0 18px 10px}
+  .withdrawal-section{padding-top:14px}.withdrawal-controls{gap:10px}.withdrawal-label,.pension-income label{font-size:10px}.withdrawal-selected,.pension-income-value{font-size:14px}.withdrawal-ticks{font-size:7px}.withdrawal-results{gap:8px}.result-card{padding:12px 10px}.result-title{font-size:13px}.result-label{font-size:10px}.result-value{font-size:17px}.note{padding:0 18px 24px;font-size:12px}.validation{padding:0 18px 10px}
 }
 @media(max-width:359px){
   h1{font-size:21px}.summary{grid-template-columns:1fr 1fr;gap:6px;padding-left:6px;padding-right:6px}.summary-item{padding:10px 7px}.summary-title{font-size:13px}.field label{font-size:8px}.input{font-size:16px;padding-left:5px}.readonly{font-size:16px}.details{font-size:11px}.details strong{font-size:16px}.scenario-col{padding:12px 10px}.metric-value{font-size:15px}
@@ -150,22 +148,27 @@ thead tr:first-child th{text-align:center;font-size:15px}
     </section>
 
     <section class="withdrawal-section">
-      <div class="withdrawal-head">
-        <span class="withdrawal-label">Retirada anual</span>
-        <span class="withdrawal-selected" id="withdrawal-selected">20.000 €/año</span>
-      </div>
-      <input id="withdrawal-range" class="withdrawal-range" type="range" min="10000" max="100000" step="10000" value="20000" aria-label="Cantidad retirada cada año">
-      <div class="withdrawal-ticks">
-        <span>10K</span><span>20K</span><span>30K</span><span>40K</span><span>50K</span><span>60K</span><span>70K</span><span>80K</span><span>90K</span><span>100K</span>
-      </div>
-      <div class="pension-income">
-        <div class="pension-income-head">
-          <label for="pension-income-range">Pensión estimada al año</label>
-          <span class="pension-income-value" id="pension-income-value">24.000 €</span>
+      <div class="withdrawal-controls">
+        <div class="withdrawal-control-block">
+          <div class="withdrawal-head">
+            <span class="withdrawal-label">Retirada anual</span>
+            <span class="withdrawal-selected" id="withdrawal-selected">20.000 €/año</span>
+          </div>
+          <input id="withdrawal-range" class="withdrawal-range" type="range" min="10000" max="100000" step="10000" value="20000" aria-label="Cantidad retirada cada año">
+          <div class="withdrawal-ticks">
+            <span>10K</span><span>20K</span><span>40K</span><span>60K</span><span>80K</span><span>100K</span>
+          </div>
         </div>
-        <input id="pension-income-range" class="pension-income-range" type="range" min="0" max="100000" step="1000" value="24000" aria-label="Pensión estimada al año">
-        <div class="withdrawal-ticks">
-          <span>0</span><span>10K</span><span>20K</span><span>30K</span><span>40K</span><span>50K</span><span>60K</span><span>70K</span><span>80K</span><span>90K</span><span>100K</span>
+
+        <div class="withdrawal-control-block pension-income">
+          <div class="pension-income-head">
+            <label for="pension-income-range">Pensión estimada al año</label>
+            <span class="pension-income-value" id="pension-income-value">24.000 €</span>
+          </div>
+          <input id="pension-income-range" class="pension-income-range" type="range" min="0" max="100000" step="1000" value="24000" aria-label="Pensión estimada al año">
+          <div class="withdrawal-ticks">
+            <span>0</span><span>20K</span><span>40K</span><span>60K</span><span>80K</span><span>100K</span>
+          </div>
         </div>
       </div>
     </section>
